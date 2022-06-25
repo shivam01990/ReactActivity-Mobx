@@ -20,7 +20,7 @@ export default observer(function ActivityList() {
                         </Header>
 
                         {activities.map(activity => (
-                            <ActivityListItem activity={activity} ></ActivityListItem>
+                            <ActivityListItem key={activity.id} activity={activity} ></ActivityListItem>
                         ))}
 
                     </Fragment>
