@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { observer } from "mobx-react-lite";
 import { useEffect } from "react";
 import { Link } from "react-router-dom";
@@ -38,7 +39,7 @@ export default observer(function ActivityDetails() {
         <Card.Content>
           <Card.Header>{activity.title}</Card.Header>
           <Card.Meta>
-            <span className='date'>{activity.date}</span>
+            <span className='date'>{format(activity.date!, 'dd MMM yyyy h:mm aa')}</span>
           </Card.Meta>
           <Card.Description>
             {activity.description}

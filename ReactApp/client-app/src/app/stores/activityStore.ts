@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import { makeAutoObservable, runInAction } from "mobx";
 import agent from "../api/agent";
 import { Activiy } from "../models/Activity";
@@ -25,7 +26,7 @@ export default class ActivityStore{
      try{
       const data= await agent.Activities.list();
         data.forEach(ac=> {
-            ac.date = ac.date.split('T')[0];
+            ac.date = new Date(ac.date!);
              this.activities.push(ac);
         })
         
@@ -79,14 +80,14 @@ export default class ActivityStore{
     }
 
     get activityByDate(){
-          return Array.from(this.activities).sort((a,b)=> Date.parse(a.date)-Date.parse(b.date));
+          return Array.from(this.activities).sort((a,b)=> a.date!.getTime()-b.date!.getTime());
     }
 
     get groupActivities()
     {
       return Object.entries(
         this.activityByDate.reduce((activities,activity)=>{
-          const date =  activity.date;
+          const date =  format(activity.date!, 'dd MMM yyyy');
           activities[date] = activities[date]?[...activities[date],activity]:[activity];
           return activities;
         },{} as {[key:string]:Activiy[]} )
@@ -112,7 +113,7 @@ export default class ActivityStore{
     }
 
     private setActivity = (activity:Activiy)=>{
-      activity.date = activity.date.split('T')[0];
+      activity.date = new Date(activity.date!);
       this.activities = [...this.activities.filter(x=>x.id!==activity.id),activity];     
     }
 

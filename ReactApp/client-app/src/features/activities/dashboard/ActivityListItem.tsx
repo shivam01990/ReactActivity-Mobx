@@ -1,3 +1,4 @@
+import { format } from "date-fns";
 import React, { SyntheticEvent, useState } from "react"
 import { Link } from "react-router-dom";
 import { NavLink } from "react-router-dom"
@@ -35,7 +36,7 @@ export default function ActivityListItem({ activity }: prop) {
             </Segment>
             <Segment>
                 <span><Icon name="clock"></Icon>
-                    {activity.date}</span>
+                    {format(activity.date!, 'dd MMM yyyy h:mm aa')}</span>
             </Segment>
             <Segment clearing>
                 <span>{activity.description}</span>
