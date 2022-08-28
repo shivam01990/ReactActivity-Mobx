@@ -1,5 +1,6 @@
 using Application.Activities;
 using Application.Core;
+using FluentValidation.AspNetCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -17,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using WebApp.Persistence;
 using WebAppAPI.Extensions;
+using WebAppAPI.Middleware;
 
 namespace WebAppAPI
 {
@@ -32,16 +34,21 @@ namespace WebAppAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers().AddFluentValidation(config=>
+            {
+                config.RegisterValidatorsFromAssemblyContaining<CreateActivity>();
+            });
             services.AddApplicationServices(Configuration);
+            services.AddIdentityServices(Configuration);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            app.UseMiddleware<ExceptionMiddleware>();
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
+                //app.UseDeveloperExceptionPage();
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "WebAppAPI v1"));
             }
@@ -52,6 +59,7 @@ namespace WebAppAPI
 
             app.UseCors("CorsPolicy");
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
