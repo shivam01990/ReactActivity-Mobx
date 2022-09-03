@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
@@ -12,7 +13,7 @@ namespace WebAppAPI.Services
 {
     public class TokenService
     {
-        public string CreateToken(AppUser user)
+        public string CreateToken(AppUser user, IConfiguration config)
         {
             var claim = new List<Claim>
             {
@@ -21,7 +22,7 @@ namespace WebAppAPI.Services
                 new Claim(ClaimTypes.Email,user.Email),
             }
             ;
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("super secret key"));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["TokenKey"]));
             var cred = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
 
             var TokenDescription = new SecurityTokenDescriptor

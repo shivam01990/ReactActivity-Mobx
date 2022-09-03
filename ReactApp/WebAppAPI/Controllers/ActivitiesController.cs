@@ -31,7 +31,6 @@ namespace WebAppAPI.Controllers
 
         }
 
-        [Authorize]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetActiviy(Guid id)
         {
